@@ -26,10 +26,18 @@ class AlgoruthmManager: AlgorithmProtocol {
         print("result : \(result)")
     }
     
-    private func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
-        // I solved of the question for you guys :D :D :D
-        return [0, 1]
-    }
+    func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
+           for i in 0...(nums.count - 1) {
+               for j in (i+1)...(nums.count-1) {
+                   if target == (nums[i] + nums[j]) {
+                       return [i, j]
+                   }
+               }
+           }
+           
+           return [0, 0]
+       }
+    
     
     // MARK: - IsPalindrome
     /*
@@ -39,8 +47,25 @@ class AlgoruthmManager: AlgorithmProtocol {
      Explanation: "amanaplanacanalpanama" is a palindrome.
      */
     func isPalindromTest() {
+            let result = isPalindrome("A man, a plan, a canal: Panama")
+            print("result : \(result)")
+        }
         
-    }
+        func isPalindrome(_ palindrome: String) -> Bool {
+            let newPalindrom = palindrome.lowercased().replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "").replacingOccurrences(of: ":", with: "")
+            print("newPalindrom : \(newPalindrom)")
+            
+            let palindromCount = newPalindrom.count
+            
+            for i in 0..<palindromCount
+            {
+                let firstIndex = newPalindrom[newPalindrom.index(newPalindrom.startIndex, offsetBy: i)]
+                let secondIndex = newPalindrom[newPalindrom.index(newPalindrom.startIndex, offsetBy: palindromCount-1-i)]
+                if firstIndex != secondIndex{
+                    return false}
+            }
+            return true
+        }
     
 //    func isPalindrome(_ s: String) -> Bool {
 //
@@ -53,8 +78,24 @@ class AlgoruthmManager: AlgorithmProtocol {
      Output: true
      */
     func isAnagramTest() {
+        let s = "anagram"
+        let t = "nagaram"
+        print("'\(s)' an nagaram of '\(t)': \(isAnagram(s, t))")
         
     }
+    func isAnagram(_ s: String, _ t: String) -> Bool {
+        if s.count != t.count { return false }
+            var mappingCharacterToCount = [Character: Int]()
+
+            for (characterOne, characterTwo) in zip(s, t) {
+                mappingCharacterToCount[characterOne, default: 0] += 1
+                mappingCharacterToCount[characterTwo, default: 0] -= 1
+            }
+            for count in mappingCharacterToCount.values {
+                if count != 0 { return false }
+            }
+            return true
+        }
     
 //    func isAnagram(_ s: String, _ t: String) -> Bool {
 //
@@ -69,8 +110,26 @@ class AlgoruthmManager: AlgorithmProtocol {
      Output: false
      */
     func duplicateTest() {
+        var nums = [1,2,3,1]
+                var result = containsDuplicate(nums)
+                print("result \(result)")
+                nums = [1,2,3,4]
+                result = containsDuplicate(nums)
+                print("result \(result)")
         
     }
+    func containsDuplicate(_ nums: [Int]) -> Bool {
+               
+               var distinctSet = Set<Int>()
+               for num in nums {
+                   if distinctSet.contains(num) {
+                       return true
+                   } else {
+                       distinctSet.insert(num)
+                   }
+               }
+               return false
+           }
     
 //    func containsDuplicate(_ nums: [Int]) -> Bool {
 //            
@@ -89,12 +148,46 @@ class AlgoruthmManager: AlgorithmProtocol {
      The result of the merge is [1,2,2,3,5,6] with the underlined elements coming from nums1.
      */
     func mergeArraysTest() {
+                var nums1 = [1,2,3,0,0,0]
+                let m = 3
+                let nums2 = [2,5,6]
+                let n = 3
+                let result: () = merge(&nums1, m, nums2, n)
+                print("Result \(result)")
         
     }
     
     private func merge(_ nums1: inout [Int], _ m: Int, _ nums2: [Int], _ n: Int) {
+        if m == 0 {
+                    nums1 = nums2
+                    return
+                }
+                if n == 0 { return }
+                var pointerOne = m - 1
+                var pointerTwo = n - 1
+                var pointer = m + n - 1
+                
+                while pointerOne >= 0 && pointerTwo >= 0 {
+                    if nums1[pointerOne] >= nums2[pointerTwo] {
+                        nums1[pointer] = nums1[pointerOne]
+                        pointer -= 1
+                        pointerOne -= 1
+                        
+                    } else {
+                        nums1[pointer] = nums2[pointerTwo]
+                        pointer -= 1
+                        pointerTwo -= 1
+                    }
+                }
+                while pointerTwo >= 0 {
+                    nums1[pointer] = nums2[pointerTwo]
+                    pointer -= 1
+                    pointerTwo -= 1
+                }
+            }
+    
             
-    }
+    
     
     // MARK: - Intersection of Two Arrays
     /*
@@ -104,8 +197,27 @@ class AlgoruthmManager: AlgorithmProtocol {
      Output: [2,2]
      */
     func arrayIntersectionTest() {
+            let nums1 = [4,9,5]
+            let nums2 = [9,4,9,8,4]
+            let result = intersection(nums1, nums2)
+            print("Result :\(result)")
+        }
         
-    }
+    func intersection(_ nums1: [Int], _ nums2: [Int]) -> [Int] {
+            var set = Set<Int>()
+            var result = Set<Int>()
+            
+            for number in nums1 {
+                set.insert(number)
+            }
+            
+            for number in nums2 {
+                if set.contains(number) {
+                    result.insert(number)
+                }
+            }
+            return Array(result)
+        }
     
 //    func intersect(_ nums1: [Int], _ nums2: [Int]) -> [Int] {
 //
@@ -121,8 +233,17 @@ class AlgoruthmManager: AlgorithmProtocol {
 
      */
     func missingNumberTest() {
-        
-    }
+        let nums = [3,0,1]
+               let result = missingNumber(nums)
+               print("Result :\(result)")
+        }
+    func missingNumber(_ nums: [Int]) -> Int {
+            var missingNumber = nums.count
+            for (index, number) in nums.enumerated() {
+                missingNumber ^= index ^ number
+            }
+            return missingNumber
+        }
     
 //    private func missingNumber(_ nums: [Int]) -> Int {
 //
